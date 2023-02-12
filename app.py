@@ -137,12 +137,12 @@ def main():
     # global variables
     global model, confidence, cfg_model_path
 
-    st.title("Object Recognition Dashboard")
+    st.title("딥러닝 기반 도로 안전 지킴이")
 
     st.sidebar.title("Settings")
 
     # upload model
-    model_src = st.sidebar.radio("Select yolov5 weight file", ["Use our demo model 5s", "Use your own model"])
+    model_src = st.sidebar.radio("Select model file (YOLOv5)", ["Use our demo model", "Use your own model"])
     # URL, upload file (max 200 mb)
     if model_src == "Use your own model":
         user_model_path = get_user_model()
