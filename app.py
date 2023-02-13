@@ -8,6 +8,10 @@ import torch
 import cv2
 import os
 import time
+import numpy as np
+
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
+import av
 
 st.set_page_config(layout="wide")
 
@@ -91,6 +95,35 @@ def video_input(data_src):
             st3_text.markdown(f"**{fps:.2f}**")
 
         cap.release()
+        
+class VideoProcessor:
+    def recv(self, frame):
+        img = frame.to_ndarray(format="bgr24")
+        
+        # vision processing
+        flipped = img[:, ::-1, :]
+
+        # model processing
+        im_pil = Image.fromarray(flipped)
+        results = model(im_pil, size=50)
+        bbox_img = np.array(results.render()[0])
+
+        # return av.VideoFrame.from_ndarray(infer_image(img), format="bgr24")
+        return av.VideoFrame.from_ndarray(bbox_img, format="bgr24")
+
+        
+def livecam_input():
+    RTC_CONFIGURATION = RTCConfiguration(
+        {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+    )
+    webrtc_ctx = webrtc_streamer(
+        key="LIVECAM",
+        mode=WebRtcMode.SENDRECV,
+        rtc_configuration=RTC_CONFIGURATION,
+        video_processor_factory=VideoProcessor,
+        media_stream_constraints={"video": True, "audio": False},
+        async_processing=True,
+    )
 
 
 def infer_image(img, size=None):
@@ -180,15 +213,17 @@ def main():
         st.sidebar.markdown("---")
 
         # input options
-        input_option = st.sidebar.radio("Select input type: ", ['image', 'video'])
+        input_option = st.sidebar.radio("Select input type: ", ['image', 'video', 'livecam'])
 
         # input src option
         data_src = st.sidebar.radio("Select input source: ", ['Sample data', 'Upload your own data'])
 
         if input_option == 'image':
             image_input(data_src)
-        else:
+        elif input_option == 'video':
             video_input(data_src)
+        else:
+            livecam_input()
 
 
 if __name__ == "__main__":
