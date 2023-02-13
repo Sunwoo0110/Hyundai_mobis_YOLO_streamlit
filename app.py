@@ -100,28 +100,28 @@ class VideoProcessor:
     def recv(self, frame):
         img = frame.to_ndarray(format="bgr24")
         
-        # vision processing
-        flipped = img[:, ::-1, :]
+        # # vision processing
+        # flipped = img[:, ::-1, :]
 
-        # model processing
-        im_pil = Image.fromarray(flipped)
-        results = model(im_pil, size=112)
-        bbox_img = np.array(results.render()[0])
+        # # model processing
+        # im_pil = Image.fromarray(flipped)
+        # results = model(im_pil, size=112)
+        # bbox_img = np.array(results.render()[0])
 
-        return av.VideoFrame.from_ndarray(bbox_img, format="bgr24")
+        return av.VideoFrame.from_ndarray(infer_image(img), format="bgr24")
 
         
 def livecam_input():
     RTC_CONFIGURATION = RTCConfiguration(
         {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
     )
-    webrtc_streamer(
+    webrtc_ctx = webrtc_streamer(
         key="WYH",
         mode=WebRtcMode.SENDRECV,
         rtc_configuration=RTC_CONFIGURATION,
         video_processor_factory=VideoProcessor,
         media_stream_constraints={"video": True, "audio": False},
-        async_processing=False,
+        async_processing=True,
     )
 
 
