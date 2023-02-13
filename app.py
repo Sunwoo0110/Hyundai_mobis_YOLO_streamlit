@@ -109,7 +109,7 @@ class VideoProcessor:
         # bbox_img = np.array(results.render()[0])
 
         # return av.VideoFrame.from_ndarray(infer_image(img), format="bgr24")
-        return av.VideoFrame.from_ndarray(img, format="bgr24")
+        return av.VideoFrame.from_ndarray(infer_image(img), format="bgr24")
 
         
 def livecam_input():
