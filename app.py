@@ -125,6 +125,9 @@ def livecam_input():
         async_processing=True,
     )
 
+def check_location():
+    st.empty()
+    st.map()
 
 def infer_image(img, size=None):
     model.conf = confidence
@@ -173,7 +176,9 @@ def main():
     st.title("딥러닝 기반 도로 안전 지킴이")
 
     st.sidebar.title("Settings")
-
+    
+    isCheck = st.sidebar.checkbox("Check your current location")
+    
     # upload model
     model_src = st.sidebar.radio("Select model file (YOLOv5)", ["Use our demo model", "Use your own model"])
     # URL, upload file (max 200 mb)
@@ -218,13 +223,15 @@ def main():
         # input src option
         data_src = st.sidebar.radio("Select input source: ", ['Sample data', 'Upload your own data'])
 
-        if input_option == 'image':
-            image_input(data_src)
-        elif input_option == 'video':
-            video_input(data_src)
+        if isCheck == False: 
+            if input_option == 'image':
+                image_input(data_src)
+            elif input_option == 'video':
+                video_input(data_src)
+            elif input_option == 'livecam':
+                livecam_input()
         else:
-            livecam_input()
-
+            check_location()
 
 if __name__ == "__main__":
     try:
