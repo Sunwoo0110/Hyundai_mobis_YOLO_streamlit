@@ -108,7 +108,8 @@ class VideoProcessor:
         # results = model(im_pil, size=112)
         # bbox_img = np.array(results.render()[0])
 
-        return av.VideoFrame.from_ndarray(infer_image(img), format="bgr24")
+        # return av.VideoFrame.from_ndarray(infer_image(img), format="bgr24")
+        return av.VideoFrame.from_ndarray(img, format="bgr24")
 
         
 def livecam_input():
@@ -116,7 +117,7 @@ def livecam_input():
         {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
     )
     webrtc_ctx = webrtc_streamer(
-        key="WYH",
+        key="LIVECAM",
         mode=WebRtcMode.SENDRECV,
         rtc_configuration=RTC_CONFIGURATION,
         video_processor_factory=VideoProcessor,
