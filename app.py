@@ -100,16 +100,16 @@ class VideoProcessor:
     def recv(self, frame):
         img = frame.to_ndarray(format="bgr24")
         
-        # # vision processing
-        # flipped = img[:, ::-1, :]
+        # vision processing
+        flipped = img[:, ::-1, :]
 
-        # # model processing
-        # im_pil = Image.fromarray(flipped)
-        # results = model(im_pil, size=112)
-        # bbox_img = np.array(results.render()[0])
+        # model processing
+        im_pil = Image.fromarray(flipped)
+        results = model(im_pil, size=112)
+        bbox_img = np.array(results.render()[0])
 
         # return av.VideoFrame.from_ndarray(infer_image(img), format="bgr24")
-        return av.VideoFrame.from_ndarray(st.infer_image(img, 100), format="bgr24")
+        return av.VideoFrame.from_ndarray(bbox_img, format="bgr24")
 
         
 def livecam_input():
